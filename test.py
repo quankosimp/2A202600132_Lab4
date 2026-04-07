@@ -116,6 +116,8 @@ def build_results_markdown(results: list[dict]) -> str:
             [
                 f"## Test {index} - {result['title']}",
                 "",
+                f"- Trace ID: `{result['trace_id']}`",
+                "",
                 "**Prompt:**",
                 "",
                 f"> {result['prompt']}",
@@ -170,6 +172,7 @@ def run_tests() -> list[dict]:
             results.append(
                 {
                     "title": case.title,
+                    "trace_id": result.get("trace_id", "-"),
                     "prompt": case.prompt,
                     "expected": case.expected,
                     "tool_calls_md": format_tool_calls(tool_calls),
@@ -182,6 +185,7 @@ def run_tests() -> list[dict]:
             results.append(
                 {
                     "title": case.title,
+                    "trace_id": "-",
                     "prompt": case.prompt,
                     "expected": case.expected,
                     "tool_calls_md": "- Không có tool call",
@@ -194,6 +198,7 @@ def run_tests() -> list[dict]:
             results.append(
                 {
                     "title": case.title,
+                    "trace_id": "-",
                     "prompt": case.prompt,
                     "expected": case.expected,
                     "tool_calls_md": "- Không có tool call",
