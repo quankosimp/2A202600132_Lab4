@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Response
@@ -9,6 +10,7 @@ from agent import run_agent
 app = FastAPI(title="TravelBuddy API", version="1.0.0")
 BASE_DIR = Path(__file__).resolve().parent
 INDEX_HTML_PATH = BASE_DIR / "web" / "index.html"
+logger = logging.getLogger("travelbuddy.api")
 
 
 class ChatRequest(BaseModel):
@@ -53,7 +55,8 @@ def chat(payload: ChatRequest) -> ChatResponse:
         return ChatResponse(reply=final_message, trace_id=trace_id)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except Exception:
+    except Exception as exc:
+        logger.exception("POST /chat failed | error=%s", exc)
         raise HTTPException(
-            status_code=500, detail="Hệ thống đang bị lỗi..."
+            status_code=500, detail=f"Hệ thống đang bị lỗi... ({exc})"
         )

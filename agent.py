@@ -120,7 +120,11 @@ def agent_node(state: AgentState):
         return {"messages": [AIMessage(content=SYSTEM_ERROR_MESSAGE)]}
 
     logger.info("[%s] Agent node start | messages=%s", trace_id, len(messages))
-    response = get_llm_with_tools().invoke(messages)
+    try:
+        response = get_llm_with_tools().invoke(messages)
+    except Exception as exc:
+        logger.exception("[%s] LLM invoke failed | error=%s", trace_id, exc)
+        raise
 
     if response.tool_calls:
         for tc in response.tool_calls:
