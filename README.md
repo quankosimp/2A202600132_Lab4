@@ -51,6 +51,26 @@ Chạy agent dạng CLI:
 venv/bin/python agent.py
 ```
 
+Chạy API local:
+
+```bash
+venv/bin/python -m uvicorn app:app --host 0.0.0.0 --port 8000
+```
+
+Healthcheck:
+
+```bash
+curl http://localhost:8000/health
+```
+
+Chat API:
+
+```bash
+curl -X POST http://localhost:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message":"Tư vấn chuyến đi Đà Nẵng 3 ngày từ Hà Nội"}'
+```
+
 Chạy test cases và ghi kết quả:
 
 ```bash
@@ -62,3 +82,57 @@ venv/bin/python test.py
 - Dữ liệu chuyến bay và khách sạn hiện là mock data trong `tools.py`.
 - Kết quả agent phụ thuộc vào model và prompt hiện tại.
 - `test_results.md` giúp quan sát trace tool call và phản hồi cuối để debug hành vi agent.
+
+## Deploy Railway
+
+1. Push code lên GitHub.
+2. Trên Railway: `New Project` -> `Deploy from GitHub repo`.
+3. Railway sẽ dùng:
+   - `requirements.txt` để cài dependency
+   - `runtime.txt` để chọn Python version
+   - `Procfile` để chạy service web
+4. Thêm biến môi trường trên Railway:
+   - `OPENROUTER_API_KEY` hoặc `OPENAI_API_KEY` (bắt buộc)
+   - `OPENROUTER_MODEL` (khuyến nghị)
+   - `OPENROUTER_SITE_URL` (khuyến nghị, có thể dùng URL Railway)
+   - `OPENROUTER_APP_NAME` (khuyến nghị)
+   - `LOG_LEVEL` (tuỳ chọn)
+5. Sau khi deploy, kiểm tra:
+   - `GET /health` trả `{ "status": "ok" }`
+   - `POST /chat` trả `reply` và `trace_id`
+
+## Chạy bằng Docker Compose (local)
+
+1. Tạo `.env` (ít nhất có `OPENROUTER_API_KEY` hoặc `OPENAI_API_KEY`).
+2. Build và chạy:
+
+```bash
+docker compose up --build
+```
+
+3. Kiểm tra:
+
+```bash
+curl http://localhost:8000/health
+```
+
+4. Dừng dịch vụ:
+
+```bash
+docker compose down
+```
+
+## Deploy Railway bằng Dockerfile
+
+- Railway **không dùng trực tiếp** `docker-compose.yml` để deploy một service.
+- Railway sẽ build từ `Dockerfile` trong repo.
+- Steps:
+  1. Push code lên GitHub.
+  2. Trên Railway tạo project từ repo.
+  3. Set biến môi trường:
+     - `OPENROUTER_API_KEY` hoặc `OPENAI_API_KEY` (bắt buộc)
+     - `OPENROUTER_MODEL` (khuyến nghị)
+     - `OPENROUTER_SITE_URL` (khuyến nghị, đặt theo domain Railway)
+     - `OPENROUTER_APP_NAME` (khuyến nghị)
+     - `LOG_LEVEL` (tuỳ chọn)
+  4. Deploy và kiểm tra `/health`, `/chat`.
