@@ -5,3 +5,4 @@ langchain-openai==0.2.14
 langchain-core==0.3.30
 langgraph==0.2.62
 typing-extensions==4.12.2
+pydantic==2.10.6

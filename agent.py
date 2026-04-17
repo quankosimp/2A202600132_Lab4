@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import Annotated
 
 from dotenv import load_dotenv
-from langchain_core.caches import BaseCache  # noqa: F401
 from langchain_core.messages import AIMessage, SystemMessage, ToolMessage
 from langchain_openai import ChatOpenAI
 from langgraph.graph import START, StateGraph
@@ -25,8 +24,6 @@ LOG_FILE_PATH = LOG_DIR / "agent.log"
 DEFAULT_MODEL = "gpt-4o-mini"
 SYSTEM_ERROR_MESSAGE = "Hệ thống đang bị lỗi..."
 MAX_TOOL_RETRIES = 3
-
-ChatOpenAI.model_rebuild()
 
 
 def setup_logger() -> logging.Logger:
