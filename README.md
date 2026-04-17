@@ -57,10 +57,22 @@ Chạy API local:
 venv/bin/python -m uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
+Mở giao diện chat:
+
+```bash
+http://localhost:8000/
+```
+
 Healthcheck:
 
 ```bash
 curl http://localhost:8000/health
+```
+
+Trạng thái service dạng JSON:
+
+```bash
+curl http://localhost:8000/status
 ```
 
 Chat API:

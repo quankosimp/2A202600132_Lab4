@@ -1,9 +1,14 @@
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException, Response
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
 from agent import run_agent
 
 app = FastAPI(title="TravelBuddy API", version="1.0.0")
+BASE_DIR = Path(__file__).resolve().parent
+INDEX_HTML_PATH = BASE_DIR / "web" / "index.html"
 
 
 class ChatRequest(BaseModel):
@@ -20,8 +25,13 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.get("/")
-def root() -> dict[str, str]:
+@app.get("/", response_class=HTMLResponse)
+def root() -> HTMLResponse:
+    return HTMLResponse(INDEX_HTML_PATH.read_text(encoding="utf-8"))
+
+
+@app.get("/status")
+def status() -> dict[str, str]:
     return {"service": "TravelBuddy API", "status": "ok", "health": "/health", "docs": "/docs"}
 
 
