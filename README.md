@@ -23,18 +23,11 @@ Người dùng nhập yêu cầu du lịch, agent sẽ phân tích intent rồi 
 
 ## Cài đặt
 
-Tạo file `.env` với một trong hai biến sau:
-
-```env
-OPENROUTER_API_KEY=your_key_here
-OPENROUTER_MODEL=openai/gpt-4o-mini
-```
-
-Hoặc:
+Tạo file `.env`:
 
 ```env
 OPENAI_API_KEY=your_key_here
-OPENROUTER_MODEL=openai/gpt-4o-mini
+OPENAI_MODEL=gpt-4o-mini
 ```
 
 Cài dependency:
@@ -104,10 +97,8 @@ venv/bin/python test.py
    - `runtime.txt` để chọn Python version
    - `Procfile` để chạy service web
 4. Thêm biến môi trường trên Railway:
-   - `OPENROUTER_API_KEY` hoặc `OPENAI_API_KEY` (bắt buộc)
-   - `OPENROUTER_MODEL` (khuyến nghị)
-   - `OPENROUTER_SITE_URL` (khuyến nghị, có thể dùng URL Railway)
-   - `OPENROUTER_APP_NAME` (khuyến nghị)
+   - `OPENAI_API_KEY` (bắt buộc)
+   - `OPENAI_MODEL` (khuyến nghị, mặc định `gpt-4o-mini`)
    - `LOG_LEVEL` (tuỳ chọn)
 5. Sau khi deploy, kiểm tra:
    - `GET /health` trả `{ "status": "ok" }`
@@ -115,7 +106,7 @@ venv/bin/python test.py
 
 ## Chạy bằng Docker Compose (local)
 
-1. Tạo `.env` (ít nhất có `OPENROUTER_API_KEY` hoặc `OPENAI_API_KEY`).
+1. Tạo `.env` (ít nhất có `OPENAI_API_KEY`).
 2. Build và chạy:
 
 ```bash
@@ -142,9 +133,7 @@ docker compose down
   1. Push code lên GitHub.
   2. Trên Railway tạo project từ repo.
   3. Set biến môi trường:
-     - `OPENROUTER_API_KEY` hoặc `OPENAI_API_KEY` (bắt buộc)
-     - `OPENROUTER_MODEL` (khuyến nghị)
-     - `OPENROUTER_SITE_URL` (khuyến nghị, đặt theo domain Railway)
-     - `OPENROUTER_APP_NAME` (khuyến nghị)
+     - `OPENAI_API_KEY` (bắt buộc)
+     - `OPENAI_MODEL` (khuyến nghị, mặc định `gpt-4o-mini`)
      - `LOG_LEVEL` (tuỳ chọn)
   4. Deploy và kiểm tra `/health`, `/chat`.

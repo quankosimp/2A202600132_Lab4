@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Annotated
 
 from dotenv import load_dotenv
+from langchain_core.caches import BaseCache  # noqa: F401
 from langchain_core.messages import AIMessage, SystemMessage, ToolMessage
 from langchain_openai import ChatOpenAI
 from langgraph.graph import START, StateGraph
@@ -21,10 +22,11 @@ BASE_DIR = Path(__file__).resolve().parent
 SYSTEM_PROMPT_PATH = BASE_DIR / "system_prompt.txt"
 LOG_DIR = BASE_DIR / "logs"
 LOG_FILE_PATH = LOG_DIR / "agent.log"
-OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
-DEFAULT_MODEL = "openai/gpt-4o-mini"
+DEFAULT_MODEL = "gpt-4o-mini"
 SYSTEM_ERROR_MESSAGE = "Hệ thống đang bị lỗi..."
 MAX_TOOL_RETRIES = 3
+
+ChatOpenAI.model_rebuild()
 
 
 def setup_logger() -> logging.Logger:
@@ -61,24 +63,17 @@ def load_system_prompt() -> str:
 
 
 def create_llm() -> ChatOpenAI:
-    api_key = os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY")
+    api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         raise ValueError(
-            "Thiếu API key. Hãy đặt OPENROUTER_API_KEY hoặc OPENAI_API_KEY trong file .env."
+            "Thiếu API key. Hãy đặt OPENAI_API_KEY trong biến môi trường."
         )
 
-    model = os.getenv("OPENROUTER_MODEL", DEFAULT_MODEL)
-    site_url = os.getenv("OPENROUTER_SITE_URL", "http://localhost")
-    app_name = os.getenv("OPENROUTER_APP_NAME", "TravelBuddy")
+    model = os.getenv("OPENAI_MODEL", DEFAULT_MODEL)
 
     return ChatOpenAI(
         model=model,
         api_key=api_key,
-        base_url=OPENROUTER_BASE_URL,
-        default_headers={
-            "HTTP-Referer": site_url,
-            "X-Title": app_name,
-        },
     )
 
 
